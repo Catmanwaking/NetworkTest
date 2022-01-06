@@ -6,41 +6,57 @@ namespace UDPTest
 {
     class Server : GameSocket
     {
-        UdpClient server;
-        IPEndPoint endPoint;        
+        private UdpClient server;
+        private IPEndPoint localEndPoint;
+        private IPEndPoint[] clients = new IPEndPoint[MAX_ROOM_SIZE];
+        private int currentClientCount;
 
         public void InitializeServer()
         {
             StartServer();
-            Listen();
+            RepeatListen();
         }
 
         private void StartServer()
         {
             server = new UdpClient(SERVER_PORT);
-            endPoint = new IPEndPoint(GetLocalIPAddress(), SERVER_PORT);
-            Console.WriteLine(endPoint.Address.ToString());
+            localEndPoint = new IPEndPoint(GetLocalIPAddress(), SERVER_PORT);
+            Console.WriteLine(localEndPoint.Address.ToString());
         }
 
-        private void Listen()
+        private void RepeatListen()
         {
             byte[] data;
             string message;
             do
             {
-                data = server.Receive(ref endPoint);
+                data = server.Receive(ref localEndPoint);
                 message = Decode(data);
                 Console.WriteLine(message);
+
+                CheckIncomingClient(message);                
+
             } while (message != "stop");
         }
 
-        private IPAddress GetLocalIPAddress()
+        private void CheckIncomingClient(string message)
         {
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            if (IPAddress.TryParse(message, out IPAddress sender)) //this can be heavily improved by using the first byte of the data
             {
-                socket.Connect("8.8.8.8", 65530);
-                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-                return endPoint.Address;
+                if(currentClientCount + 1 >= MAX_ROOM_SIZE)
+                {
+                    byte[] data = Encode($"room is full");
+                    IPEndPoint clientEndPoint = new IPEndPoint(sender, SERVER_PORT);
+                    server.Send(data, data.Length, clientEndPoint);
+                }
+                else
+                {
+                    byte[] data = Encode($"message from {message} acknowledged, IP temporarily stored for communication, you are client {currentClientCount}");
+                    IPEndPoint clientEndPoint = new IPEndPoint(sender, SERVER_PORT);
+                    clients[currentClientCount++] = clientEndPoint;
+                    server.Send(data, data.Length, clientEndPoint);
+                }
+                
             }
         }
 

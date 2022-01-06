@@ -11,7 +11,7 @@ namespace UDPTest
         static void Main(string[] args)
         {
             Console.WriteLine("(S)erver, (C)lient");
-            switch (Console.ReadKey().Key)
+            switch (Console.ReadKey(true).Key)
             {
                 case ConsoleKey.S:
                     ServerRoutine();
