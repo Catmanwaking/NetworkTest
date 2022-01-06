@@ -7,10 +7,7 @@ namespace UDPTest
     class GameSocket
     {
         public const int SERVER_PORT = 2345;
-        public const int PACKET_SIZE = 512;
         public const int MAX_ROOM_SIZE = 8;
-
-        protected byte[] buffer = new byte[PACKET_SIZE];
 
         protected byte[] Encode(string message)
         {

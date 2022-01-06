@@ -18,7 +18,6 @@ namespace UDPTest
 
         private void StartClient()
         {
-            buffer = new byte[PACKET_SIZE];
             client = new UdpClient();
             IPAddress targetIP;
 
@@ -56,9 +55,7 @@ namespace UDPTest
         private void SendString(string message)
         {
             byte[] data = Encode(message); //watch out for message length
-            Buffer.BlockCopy(data, 0, buffer, 0, data.Length);
-
-            client.Send(buffer, PACKET_SIZE, serverEndPoint);
+            client.Send(data, data.Length, serverEndPoint);
         }
 
         ~Client()

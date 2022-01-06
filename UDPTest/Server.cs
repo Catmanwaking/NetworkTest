@@ -9,7 +9,7 @@ namespace UDPTest
         private UdpClient server;
         private IPEndPoint localEndPoint;
         private IPEndPoint[] clients = new IPEndPoint[MAX_ROOM_SIZE];
-        private int currentClientCount;
+        private int currentClientCount = 0;
 
         public void InitializeServer()
         {
@@ -33,6 +33,7 @@ namespace UDPTest
                 data = server.Receive(ref localEndPoint);
                 message = Decode(data);
                 Console.WriteLine(message);
+                Console.WriteLine(message.Length);
 
                 CheckIncomingClient(message);                
 
