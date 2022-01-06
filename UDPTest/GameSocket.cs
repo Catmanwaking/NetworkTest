@@ -1,13 +1,29 @@
 ﻿using System.Text;
 using System.Net.Sockets;
 using System.Net;
+using System;
 
 namespace UDPTest
 {
-    class GameSocket
+    public abstract class GameSocket
     {
         public const int SERVER_PORT = 2345;
         public const int MAX_ROOM_SIZE = 8;
+
+        protected UdpClient server;
+        protected IPEndPoint localEndPoint;
+
+        public GameSocket()
+        {
+            server = new UdpClient(SERVER_PORT);
+            localEndPoint = new IPEndPoint(GetLocalIPAddress(), SERVER_PORT);
+            Console.WriteLine(localEndPoint.Address.ToString());
+        }
+
+        ~GameSocket()
+        {
+            server.Close();
+        }
 
         protected byte[] Encode(string message)
         {
@@ -20,6 +36,18 @@ namespace UDPTest
             return Encoding.UTF8.GetString(data, 0, length);
         }
 
+        protected string RecieveMessage()
+        {
+            byte[] data = server.Receive(ref localEndPoint);
+            return Decode(data);
+        }
+
+        protected void SendMessage(string message, IPEndPoint serverEndPoint)
+        {
+            byte[] data = Encode(message); //watch out for message length
+            server.Send(data, data.Length, serverEndPoint);
+        }
+
         protected IPAddress GetLocalIPAddress()
         {
             using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
@@ -29,5 +57,7 @@ namespace UDPTest
                 return endPoint.Address;
             }
         }
+
+        public abstract void Start();
     }
 }

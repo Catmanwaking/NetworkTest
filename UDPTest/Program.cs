@@ -11,29 +11,31 @@ namespace UDPTest
         static void Main(string[] args)
         {
             Console.WriteLine("(S)erver, (C)lient");
+            GameSocket socket;
             switch (Console.ReadKey(true).Key)
             {
                 case ConsoleKey.S:
-                    ServerRoutine();
+                    GameSocket UdpServer = new Server();
                     break;
                 case ConsoleKey.C:
-                    ClientRoutine();
+                    GameSocket UdpClient = new Client();
                     break;
                 default:
                     return;
             }
+            socket.Start();
         }
 
         private static void ServerRoutine()
         {
-            Server UdpServer = new Server();
-            UdpServer.InitializeServer();
+            
+            UdpServer.Start();
         }
 
         private static void ClientRoutine()
         {
-            Client UdpClient = new Client();
-            UdpClient.InitializeClient();
+            
+            
         }
     }
 }

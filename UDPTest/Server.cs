@@ -6,35 +6,20 @@ namespace UDPTest
 {
     class Server : GameSocket
     {
-        private UdpClient server;
-        private IPEndPoint localEndPoint;
         private IPEndPoint[] clients = new IPEndPoint[MAX_ROOM_SIZE];
         private int currentClientCount = 0;
 
-        public void InitializeServer()
+        public override void Start()
         {
-            StartServer();
             RepeatListen();
-        }
-
-        private void StartServer()
-        {
-            server = new UdpClient(SERVER_PORT);
-            localEndPoint = new IPEndPoint(GetLocalIPAddress(), SERVER_PORT);
-            Console.WriteLine(localEndPoint.Address.ToString());
         }
 
         private void RepeatListen()
         {
-            byte[] data;
             string message;
             do
             {
-                data = server.Receive(ref localEndPoint);
-                message = Decode(data);
-                Console.WriteLine(message);
-                Console.WriteLine(message.Length);
-
+                message = RecieveMessage();
                 CheckIncomingClient(message);                
 
             } while (message != "stop");
@@ -52,18 +37,14 @@ namespace UDPTest
                 }
                 else
                 {
-                    byte[] data = Encode($"message from {message} acknowledged, IP temporarily stored for communication, you are client {currentClientCount}");
+                    message = $"message from {message} acknowledged, IP temporarily stored for communication, you are client {currentClientCount}";
+                    Console.WriteLine(message);
+                    byte[] data = Encode(message);
                     IPEndPoint clientEndPoint = new IPEndPoint(sender, SERVER_PORT);
                     clients[currentClientCount++] = clientEndPoint;
                     server.Send(data, data.Length, clientEndPoint);
-                }
-                
+                }                
             }
-        }
-
-        ~Server()
-        {
-            server.Close();
         }
     }
 }
