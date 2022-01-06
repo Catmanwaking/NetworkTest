@@ -7,7 +7,7 @@ namespace UDPTest
     class Client : GameSocket
     {
         UdpClient client;
-        IPAddress targetIP;
+        IPEndPoint endPoint;
 
         public void InitializeClient()
         {
@@ -18,13 +18,15 @@ namespace UDPTest
         private void StartClient()
         {
             client = new UdpClient();
+            IPAddress targetIP;
             Console.Write("IP:");
-            while(!IPAddress.TryParse(Console.ReadLine(), out targetIP))
+            while (!IPAddress.TryParse(Console.ReadLine(), out targetIP))
             {
                 Console.Clear();
                 Console.WriteLine("Invalid IP\nIP:");
             }
             Console.Clear();
+            endPoint = new IPEndPoint(targetIP, SERVER_PORT);
         }
 
         private void SendData()
@@ -35,8 +37,8 @@ namespace UDPTest
             {
                 message = Console.ReadLine();
                 data = Encode(message);
-                client.Send(data, data.Length, "localhost", SERVER_PORT);
-            } while (message != "stop");           
+                client.Send(data, data.Length, endPoint);
+            } while (message != "stop");
         }
 
         ~Client()
