@@ -8,11 +8,6 @@ namespace UDPTest
     {
         IPEndPoint serverEndPoint;     
 
-        public Client() : base()
-        {
-
-        }
-
         public override void Start()
         {
             GetTargetIP();

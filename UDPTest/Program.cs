@@ -15,27 +15,15 @@ namespace UDPTest
             switch (Console.ReadKey(true).Key)
             {
                 case ConsoleKey.S:
-                    GameSocket UdpServer = new Server();
+                    socket = new Server();
                     break;
                 case ConsoleKey.C:
-                    GameSocket UdpClient = new Client();
+                    socket = new Client();
                     break;
                 default:
                     return;
             }
             socket.Start();
-        }
-
-        private static void ServerRoutine()
-        {
-            
-            UdpServer.Start();
-        }
-
-        private static void ClientRoutine()
-        {
-            
-            
         }
     }
 }
