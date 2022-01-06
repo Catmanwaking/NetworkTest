@@ -10,16 +10,18 @@ namespace UDPTest
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("(S)erver, (C)lient");
             switch (Console.ReadKey().Key)
             {
                 case ConsoleKey.S:
+                    ServerRoutine();
                     break;
                 case ConsoleKey.C:
+                    ClientRoutine();
                     break;
                 default:
                     return;
             }
-            
         }
 
         private static void ServerRoutine()
@@ -31,7 +33,7 @@ namespace UDPTest
         private static void ClientRoutine()
         {
             Client UdpClient = new Client();
-            UdpClient.InitializeServer();
+            UdpClient.InitializeClient();
         }
     }
 }
