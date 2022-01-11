@@ -7,7 +7,7 @@ namespace UDPTest
 {
     public abstract class GameSocket
     {
-        public const int SERVER_PORT = 2345;
+        public const int SERVER_PORT = 4000; //borrowing Diablo's server port
         public const int MAX_ROOM_SIZE = 8;
 
         protected UdpClient server;
@@ -17,6 +17,8 @@ namespace UDPTest
         {
             server = new UdpClient(SERVER_PORT);
             localEndPoint = new IPEndPoint(GetLocalIPAddress(), SERVER_PORT);
+            //GetOwnIPManual();
+            //localEndPoint = new IPEndPoint(IPAddress.Any, SERVER_PORT);
             Console.WriteLine(localEndPoint.Address.ToString());
         }
 
@@ -56,6 +58,19 @@ namespace UDPTest
                 IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
                 return endPoint.Address;
             }
+        }
+
+        private void GetOwnIPManual()
+        {
+            IPAddress targetIP;
+            Console.Write("IP:");
+            while (!IPAddress.TryParse(Console.ReadLine(), out targetIP))
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid IP\nIP:");
+            }
+            Console.Clear();
+            localEndPoint = new IPEndPoint(targetIP/*IPAddress.Any*/, SERVER_PORT);
         }
 
         public abstract void Start();

@@ -20,6 +20,7 @@ namespace UDPTest
             do
             {
                 message = RecieveMessage();
+                Console.WriteLine(message);
                 CheckIncomingClient(message);                
 
             } while (message != "stop");
